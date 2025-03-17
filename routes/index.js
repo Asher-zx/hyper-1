@@ -1,22 +1,47 @@
-var express = require('express');
-var router = express.Router();
+import animalRepo from "../repo/animals.js";
+import express from 'express';
 
-router.get('/players/:name', (req, res, next) => {
-  res.send("Hello " + req.params.name);
+const router = express.Router();
+
+// Controller -> Repository -> Array
+
+router.get('/ping', (req, res) => {
+  res.send('pong');
 });
 
-router.post('/players/create', function (req, res, next) {
-  console.log(req.body.name);
-
-  res.status(201).send(`Created player ${req.body.name}`);
+router.get('/animals/all/mood', (req, res) => {
+  res.send(animalRepo.getAllAnimals());
 });
 
-router.post('/players/update', function (req, res, next) {
-  res.send("Player updated");
+router.get('/animals/:species/mood', (req, res) => {
+  const matchingAnimals = animalRepo.getAnimals(req.params.species);
+  res.send(matchingAnimals);
 });
 
-router.delete('/players/:id', function (req, res, next) {
-  res.send("Player deleted");
+router.put('/animals/:species/:name', (req, res) => {
+  animalRepo.addAnimal(req.params.species, req.params.name);
+  res.status(201).send("");
 });
 
-module.exports = router;
+router.put('/animals/:species/:name/mood', (req, res) => {
+  const { species, name } = req.params;
+  const { mood } = req.body;
+
+  let animal = animals.find(a => a.species === species && a.name === name);
+  if (animal) {
+    animal.mood = mood;
+    res.status(200).send(`Updated mood of ${name} the ${species} to ${mood}`);
+  } else {
+    res.status(404).send(`Animal ${name} the ${species} not found`);
+  }
+});
+
+router.put('/pudding/:id', (req, res) => {
+  myArray.push({ id: req.params.id });
+});
+
+router.post('/class/:id/startBreak', (req, res) => {
+  res.send(`break started ${req.params.id}`);
+});
+
+export default router;
