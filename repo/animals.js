@@ -1,14 +1,36 @@
-let animals = [];
+import fs from 'fs';
+import path from 'path';
+
+const filePath = path.join(import.meta.dirname, 'animals.json');
+
+const readFile = () => {
+    try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data);
+    } catch (err) {
+        console.error('Error reading file:', err);
+        return [];
+    }
+};
+
+const saveFile = (animals) => {
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(animals, null, 1), 'utf8');
+    } catch (err) {
+        console.error('Error writing file:', err);
+    }
+};
 
 const getSpecificSpecies = (speciesName) => {
-    return animals.filter(a => a.species == speciesName);
+    return readFile().filter(a => a.species == speciesName);
 };
 
 const getAllAnimals = () => {
-    return animals;
+    return readFile();
 }
 
 const updateMood = (speciesName, name, newMood) => {
+    const animals = readFile();
     console.log(`Exists ${animals.length} animals`);
     console.log(`Searching for ${speciesName} ${name}`);
 
@@ -17,11 +39,12 @@ const updateMood = (speciesName, name, newMood) => {
         return false;
 
     animals[foundAnimalIndex].mood = newMood;
+    saveFile(animals);
     return true;
 };
 
 const addAnimal = (species, name) => {
-
+    const animals = readFile();
     const foundAnimalIndex = animals.findIndex(a => a.species === species && a.name === name);
 
 
@@ -34,6 +57,7 @@ const addAnimal = (species, name) => {
         name,
         mood: "hungry"
     });
+    saveFile(animals);
     return true;
 }
 
