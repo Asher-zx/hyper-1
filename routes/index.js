@@ -3,8 +3,6 @@ import express from 'express';
 
 const router = express.Router();
 
-// Controller -> Repository -> Array
-
 router.get('/ping', (req, res) => {
   res.send('pong');
 });
@@ -19,17 +17,25 @@ router.get('/animals/:species/mood', (req, res) => {
 });
 
 router.put('/animals/:species/:name', (req, res) => {
-  animalRepo.addAnimal(req.params.species, req.params.name);
-  res.status(201).send("");
+  const couldAddAnimal = animalRepo.addAnimal(req.params.species, req.params.name);
+
+  if (couldAddAnimal) {
+    res.status(201).send("");
+  } else {
+    res.status(409).send("Already exists");
+  }
 });
 
 router.put('/animals/:species/:name/mood', (req, res) => {
   const { species, name } = req.params;
   const { mood } = req.body;
 
-  let animal = animals.find(a => a.species === species && a.name === name);
-  if (animal) {
-    animal.mood = mood;
+  console.log("Mood" + req.body.mood);
+
+
+  const couldUpdateAnimal = animalRepo.updateMood(species, name, mood);
+
+  if (couldUpdateAnimal) {
     res.status(200).send(`Updated mood of ${name} the ${species} to ${mood}`);
   } else {
     res.status(404).send(`Animal ${name} the ${species} not found`);

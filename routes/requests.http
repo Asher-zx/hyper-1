@@ -1,0 +1,14 @@
+GET http://localhost:3000/animals/all/mood
+
+###
+
+PUT http://localhost:3000/animals/cat/fifi
+
+###
+
+PUT http://localhost:3000/animals/cat/fifi/mood
+Content-Type: application/json
+
+{
+    "mood": "happy"
+}
