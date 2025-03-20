@@ -2,6 +2,10 @@ GET http://localhost:3000/animals/all/mood
 
 ###
 
+GET http://localhost:3000/animals/cat/mood
+
+###
+
 PUT http://localhost:3000/animals/cat/fifi
 
 ###

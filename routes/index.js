@@ -7,17 +7,17 @@ router.get('/ping', (req, res) => {
   res.send('pong');
 });
 
-router.get('/animals/all/mood', (req, res) => {
-  res.send(animalRepo.getAllAnimals());
+router.get('/animals/all/mood', async (req, res) => {
+  res.send(await animalRepo.getAllAnimals());
 });
 
-router.get('/animals/:species/mood', (req, res) => {
-  const matchingAnimals = animalRepo.getAnimals(req.params.species);
+router.get('/animals/:species/mood', async (req, res) => {
+  const matchingAnimals = await animalRepo.getAnimals(req.params.species);
   res.send(matchingAnimals);
 });
 
-router.put('/animals/:species/:name', (req, res) => {
-  const couldAddAnimal = animalRepo.addAnimal(req.params.species, req.params.name);
+router.put('/animals/:species/:name', async (req, res) => {
+  const couldAddAnimal = await animalRepo.addAnimal(req.params.species, req.params.name);
 
   if (couldAddAnimal) {
     res.status(201).send("");
@@ -26,14 +26,14 @@ router.put('/animals/:species/:name', (req, res) => {
   }
 });
 
-router.put('/animals/:species/:name/mood', (req, res) => {
+router.put('/animals/:species/:name/mood', async (req, res) => {
   const { species, name } = req.params;
   const { mood } = req.body;
 
   console.log("Mood" + req.body.mood);
 
 
-  const couldUpdateAnimal = animalRepo.updateMood(species, name, mood);
+  const couldUpdateAnimal = await animalRepo.updateMood(species, name, mood);
 
   if (couldUpdateAnimal) {
     res.status(200).send(`Updated mood of ${name} the ${species} to ${mood}`);
