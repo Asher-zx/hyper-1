@@ -1,64 +1,77 @@
-import fs from 'fs';
-import path from 'path';
+import { MongoClient } from "mongodb";
 
-const filePath = path.join(import.meta.dirname, 'animals.json');
+const client = new MongoClient("mongodb://localhost:27017");
 
-const readFile = () => {
-    try {
-        const data = fs.readFileSync(filePath, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        console.error('Error reading file:', err);
-        return [];
-    }
-};
-
-const saveFile = (animals) => {
-    try {
-        fs.writeFileSync(filePath, JSON.stringify(animals, null, 1), 'utf8');
-    } catch (err) {
-        console.error('Error writing file:', err);
-    }
-};
-
-const getSpecificSpecies = (speciesName) => {
-    return readFile().filter(a => a.species == speciesName);
-};
-
-const getAllAnimals = () => {
-    return readFile();
+const connectToDB = () => {
+    client.connect();
+    return client.db("zoo").collection("animals");
 }
 
-const updateMood = (speciesName, name, newMood) => {
-    const animals = readFile();
-    console.log(`Exists ${animals.length} animals`);
-    console.log(`Searching for ${speciesName} ${name}`);
+const getAllAnimals = async () => {
+    const animals = connectToDB();
+    const allAnimals = await animals.find({}).toArray();
+    return allAnimals;
+}
 
-    const foundAnimalIndex = animals.findIndex(a => a.species === speciesName && a.name === name);
-    if (foundAnimalIndex === -1)
-        return false;
-
-    animals[foundAnimalIndex].mood = newMood;
-    saveFile(animals);
-    return true;
+const getSpecificSpecies = async (species) => {
+    const animals = connectToDB();
+    const allAnimals = await animals.find(
+        {
+            species
+        }
+    ).toArray();
+    return allAnimals;
 };
 
-const addAnimal = (species, name) => {
-    const animals = readFile();
-    const foundAnimalIndex = animals.findIndex(a => a.species === species && a.name === name);
+const updateMood = async (speciesName, name, newMood) => {
+    const animals = connectToDB();
 
+    const result = await animals.updateOne(
+        { name, species: speciesName },
+        { $set: { mood: newMood } });
 
-    if (foundAnimalIndex !== -1) {
+    if (result.modifiedCount > 0)
+        return true;
+    else
+        return false;
+};
+
+const feedAnAnimal = async (species, name) => {
+    const animals = connectToDB();
+    const result = await animals.updateOne(
+        { species, name, mood: "hungry" },
+        { $set: { mood: "happy" } }
+    )
+
+    return result.modifiedCount > 0;
+}
+
+const feedSpecies = async (species) => {
+
+}
+
+const freeAnimalFromCaptivity = async (species, name) => {
+    const animals = connectToDB();
+    const result = await animals.deleteOne({ species, name });
+
+    return result.deletedCount > 0;
+}
+
+const addAnimal = async (species, name) => {
+    const animals = connectToDB();
+    const existingAnimal = await animals.findOne({ species, name });
+
+    if (existingAnimal) {
         return false;
     }
 
-    animals.push({
-        species,
-        name,
+    await animals.insertOne({
+        species: species,
+        name: name,
         mood: "hungry"
     });
-    saveFile(animals);
+
     return true;
 }
 
-export default { getSpecificSpecies, getAllAnimals, addAnimal, updateMood };
+export default { getSpecificSpecies, getAllAnimals, addAnimal, updateMood, freeAnimalFromCaptivity, feedAnAnimal };

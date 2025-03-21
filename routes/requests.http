@@ -2,7 +2,11 @@ GET http://localhost:3000/animals/all/mood
 
 ###
 
-PUT http://localhost:3000/animals/cat/fifi
+GET http://localhost:3000/animals/cat/mood
+
+###
+
+PUT http://localhost:3000/animals/cat/soffan
 
 ###
 
@@ -10,9 +14,17 @@ PUT http://localhost:3000/animals/cat/felix
 
 ###
 
-PUT http://localhost:3000/animals/cat/fifi/mood
+PUT http://localhost:3000/animals/camel/George/mood
 Content-Type: application/json
 
 {
     "mood": "happy"
 }
+
+###
+
+DELETE http://localhost:3000/animals/cat/felix
+
+###
+
+POST http://localhost:3000/animals/cat/soffan/feed

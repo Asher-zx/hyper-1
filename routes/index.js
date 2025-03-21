@@ -1,23 +1,28 @@
 import animalRepo from "../repo/animals.js";
-import express from 'express';
+import express from "express";
 
 const router = express.Router();
 
-router.get('/ping', (req, res) => {
-  res.send('pong');
+router.get("/ping", (req, res) => {
+  res.send("pong");
 });
 
-router.get('/animals/all/mood', (req, res) => {
-  res.send(animalRepo.getAllAnimals());
+router.get("/animals/all/mood", async (req, res) => {
+  res.send(await animalRepo.getAllAnimals());
 });
 
-router.get('/animals/:species/mood', (req, res) => {
-  const matchingAnimals = animalRepo.getSpecificSpecies(req.params.species);
+router.get("/animals/:species/mood", async (req, res) => {
+  const matchingAnimals = await animalRepo.getSpecificSpecies(
+    req.params.species
+  );
   res.send(matchingAnimals);
 });
 
-router.put('/animals/:species/:name', (req, res) => {
-  const couldAddAnimal = animalRepo.addAnimal(req.params.species, req.params.name);
+router.put("/animals/:species/:name", async (req, res) => {
+  const couldAddAnimal = await animalRepo.addAnimal(
+    req.params.species,
+    req.params.name
+  );
 
   if (couldAddAnimal) {
     res.status(201).send("");
@@ -26,14 +31,24 @@ router.put('/animals/:species/:name', (req, res) => {
   }
 });
 
-router.put('/animals/:species/:name/mood', (req, res) => {
+router.post("/animals/:species/:name/feed", async (req, res) => {
+  const { species, name } = req.params;
+  const didWeFeedTheAnimal = await animalRepo.feedAnAnimal(species, name);
+
+  if (didWeFeedTheAnimal) {
+    res.status(200).send(`We fed ${name} the ${species}`);
+  } else {
+    res.status(404).send(`Good job, you threw away food`);
+  }
+});
+
+router.put("/animals/:species/:name/mood", async (req, res) => {
   const { species, name } = req.params;
   const { mood } = req.body;
 
   console.log("Mood" + req.body.mood);
 
-
-  const couldUpdateAnimal = animalRepo.updateMood(species, name, mood);
+  const couldUpdateAnimal = await animalRepo.updateMood(species, name, mood);
 
   if (couldUpdateAnimal) {
     res.status(200).send(`Updated mood of ${name} the ${species} to ${mood}`);
@@ -42,11 +57,22 @@ router.put('/animals/:species/:name/mood', (req, res) => {
   }
 });
 
-router.put('/pudding/:id', (req, res) => {
+router.delete("/animals/:species/:name/", async (req, res) => {
+
+  const didWeFreeTheAnimal = await animalRepo.freeAnimalFromCaptivity(req.params.species, req.params.name);
+
+  if (didWeFreeTheAnimal)
+    res.status(200).send(`Well done, you have freed ${req.params.name}`);
+  else
+    res.send("Better luck next time");
+
+});
+
+router.put("/pudding/:id", (req, res) => {
   myArray.push({ id: req.params.id });
 });
 
-router.post('/class/:id/startBreak', (req, res) => {
+router.post("/class/:id/startBreak", (req, res) => {
   res.send(`break started ${req.params.id}`);
 });
 
