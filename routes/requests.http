@@ -2,7 +2,7 @@ GET http://localhost:3000/animals/all/mood
 
 ###
 
-GET http://localhost:3000/animals/cat/mood
+GET http://localhost:3000/animals/cow/mood
 
 ###
 
