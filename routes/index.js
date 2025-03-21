@@ -12,7 +12,7 @@ router.get('/animals/all/mood', (req, res) => {
 });
 
 router.get('/animals/:species/mood', (req, res) => {
-  const matchingAnimals = animalRepo.getAnimals(req.params.species);
+  const matchingAnimals = animalRepo.getSpecificSpecies(req.params.species);
   res.send(matchingAnimals);
 });
 
