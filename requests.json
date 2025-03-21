@@ -1,0 +1,60 @@
+{
+  "name": "Animal API",
+  "requests": [
+    {
+      "name": "Ping",
+      "method": "GET",
+      "url": "http://localhost:3000/ping"
+    },
+    {
+      "name": "Get All Animals Mood",
+      "method": "GET",
+      "url": "http://localhost:3000/animals/all/mood"
+    },
+    {
+      "name": "Get Animals by Species Mood",
+      "method": "GET",
+      "url": "http://localhost:3000/animals/:species/mood",
+      "params": {
+        "species": "lion"
+      }
+    },
+    {
+      "name": "Add Animal",
+      "method": "PUT",
+      "url": "http://localhost:3000/animals/:species/:name",
+      "params": {
+        "species": "lion",
+        "name": "simba"
+      }
+    },
+    {
+      "name": "Update Animal Mood",
+      "method": "PUT",
+      "url": "http://localhost:3000/animals/:species/:name/mood",
+      "params": {
+        "species": "lion",
+        "name": "simba"
+      },
+      "body": {
+        "mood": "happy"
+      }
+    },
+    {
+      "name": "Add Pudding",
+      "method": "PUT",
+      "url": "http://localhost:3000/pudding/:id",
+      "params": {
+        "id": "123"
+      }
+    },
+    {
+      "name": "Start Class Break",
+      "method": "POST",
+      "url": "http://localhost:3000/class/:id/startBreak",
+      "params": {
+        "id": "456"
+      }
+    }
+  ]
+}

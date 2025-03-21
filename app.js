@@ -1,10 +1,16 @@
 import createError from 'http-errors';
 import express from 'express';
 import logger from 'morgan';
-
+import connectDB from './db.js';
 import indexRouter from './routes/index.js';
 
 const app = express();
+
+//connect to MongoDB
+connectDB();
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, ()  => console.log(`Server running on port ${PORT}`));
 
 app.use(logger('dev'));
 app.use(express.json());
